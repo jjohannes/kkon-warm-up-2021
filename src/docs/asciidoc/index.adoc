@@ -1,0 +1,126 @@
+:revnumber: {project-version}
+:example-caption!:
+ifndef::imagesdir[:imagesdir: images]
+ifndef::sourcedir[:sourcedir: ../java]
+:navigation:
+:menu:
+:status:
+:transition: none
+:title-slide-background-image: title.png
+:title-slide-transition: zoom
+:title-slide-transition-speed: fast
+:icons: font
+:revealjs_center: false
+:highlightjsdir: highlight
+
+= : Hinter der Magie von Gradle und Kotlin
+
++++<h3>+++
++++<div style="font-size: 0.5em; padding-top:140px">+++
+KKON Warm-up 2021 / Jendrik Johannes, Gradle
++++</div>+++
++++</h3>+++
+
+== What is Gradle?
+
+* https://github.com/gradle/gradle[*Gradle Build Tool*]
+** Open Source (APL)
+** for Java, Groovy, Kotlin, Scala, ...
+** Developed by Gradle GmbH/Inc. with many community contributions
+
+== What is Gradle?
+
+* https://gradle.com[*Gradle Enterprise*]
+** Works with multiple Built Tools: Gradle Build Tool, Maven, ...
+** Build Insights, Caching, Performance Analysis, Flaky Test Detection, ...
+** Developed by Gradle GmbH/Inc.
+
+* Public Build Scans for Gradle builds: https://scans.gradle.com/[scans.gradle.com]
+
+== What's special about Gradle Build Tool?
+
+* Can be used to write imperative scripts
+** like Ant, but with a proper programming language
+* Can be used to _model_ your software
+** like Maven, but with a richer and more extensible model
+* Many Gradle builds today are a mix of both
+** Its strength is its weakness: spaghetti code build scripts are common :(
+
+== Perspective on Gradle in this talk
+
+* Look at Gradle as a tool to model your software
+* Let Gradle read that model to build your software
+
+{empty} +
+{empty} +
+
+This is how you should look at Gradle!
+
+== Sample Architecture
+https://docs.gradle.org/current/samples/sample_structuring_software_projects.html[docs.gradle.org/samples/sample_structuring_software_projects]
+
+[plantuml, overview-reduced, png, width=600, height=0%]
+....
+scale 2400 width
+skinparam monochrome true
+skinparam backgroundcolor transparent
+skinparam componentStyle uml2
+skinparam component {
+    BackgroundColor white
+    BorderColor Black
+	ArrowColor Black
+}
+
+database "External Repository" {
+  [Spring Boot\nFramework] as SpringBoot
+}
+
+[server-application]
+
+component user-feature as user {
+    [data]
+    [ui]
+}
+data -> ui
+
+[domain-model]
+
+[server-application] -down-> user
+
+user -down-> [domain-model]
+
+[server-application] -down-> [SpringBoot]
+
+[build-logic]
+....
+
+include::chapters/component.adoc[]
+include::chapters/build-logic.adoc[]
+include::chapters/product.adoc[]
+include::chapters/working.adoc[]
+
+== Summary
+
+* Look at Gradle as a tool to model your software
+* Treat each component in your architecture as a separate Gradle build
+* Treat build configuration and customization as separate components
+
+== Try this at home!
+
+* Slides: *jjohannes.github.io/kkon-warm-up-2021*
+* https://docs.gradle.org/current/userguide/structuring_software_products.html[Gradle Manual: Structuring and Building a Software Product with Gradle]
+* https://docs.gradle.org/current/samples/sample_structuring_software_projects.html[Structuring Software Projects Sample]
+
+{empty} +
+
+*Chat more about Gradle and Kotlin?*
+
+mailto:jendrik@onepiece.software[jendrik@onepiece.software]
+
+https://onepiece.software[onepiece.software]
+
+https://twitter.com/jeoj[@jeoj]
+
+== ...
+
+include::chapters/backup.adoc[]

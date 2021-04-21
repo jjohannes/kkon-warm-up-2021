@@ -1,0 +1,98 @@
+[background-color="#01303a"]
+== Composing a Product from Components
+
+== Composing a Product from Components
+
+[plantuml, product, png, width=540, height=0%]
+....
+scale 2400 width
+skinparam monochrome true
+skinparam backgroundcolor transparent
+skinparam componentStyle uml2
+skinparam component {
+    BackgroundColor white
+    BorderColor Black
+	ArrowColor Black
+}
+
+database "External Repository" {
+  [Spring Boot\nFramework] as SpringBoot
+  [Jackson]
+}
+
+[server-application]
+
+[user-feature]
+
+[domain-model]
+
+[server-application] -down-> [SpringBoot]
+[user-feature] -> [Jackson]
+
+[build-logic]
+
+[server-application] -right-> [user-feature]
+[user-feature] -right-> [domain-model]
+
+[server-application] ..> [build-logic]
+[user-feature] ..> [build-logic]
+[domain-model] ..> [build-logic]
+....
+
+Demo #3 - We add dependencies between our components
+
+[source,terminal]
+----
+- build-logic
+  └── settings.gradle.kts
+
+- server-application
+  └── settings.gradle.kts
+
+- user-feature
+  └── settings.gradle.kts
+
+- domain-model
+  └── settings.gradle.kts
+----
+
+== Component: User Feature
+
+[plantuml, user-feature-3, png, width=240, height=0%]
+....
+scale 2400 width
+skinparam monochrome true
+skinparam backgroundcolor transparent
+skinparam componentStyle uml2
+skinparam component {
+    BackgroundColor white
+    BorderColor Black
+	ArrowColor Black
+}
+
+component user-feature {
+    [data]
+    [ui]
+}
+data -> ui
+....
+
+[source,terminal]
+----
+─ user-feature
+  ├── data
+  │   └── build.gradle.kts
+  │       | plugins { id("com.example.java-library") } // project type
+  │       | dependencies { api("com.example.myproduct:release") }
+  │
+  ├── ui
+  │   └── build.gradle.kts
+  │       | plugins { id("com.example.java-library") } // project type
+  │       | dependencies { ... }
+  │
+  └── settings.gradle.kts
+      | includeBuild("../build-logic")  // location of a source component
+      | includeBuild("../domain-model") // location of a source component
+      | repositories { mavenCentral() } // location of binary components
+      | include("data", "ui")           // inner structure
+----

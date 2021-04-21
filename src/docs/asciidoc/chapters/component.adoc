@@ -1,0 +1,106 @@
+[background-color="#01303a"]
+== Defining Components as Gradle Builds
+
+== How do you control Gradle?
+
+* You write "build scripts", which should be *models of your software*
+* Use Gradle Groovy DSL (Domain Specific Language)
+* Or Gradle Kotlin DSL (Domain Specific Language)
+
+{empty} +
+{empty} +
+
+NOTE: Gradle runs on the JVM and compiles to JVM bytecode.
+Other JVM language can also be used to control Gradle.
+
+//** Or write classes implementing an interface (`Plugin<Project>`) in Java or any other JVM language
+// * Everything compiles to JVM bytecode that configures a model in memory when Gradle executes
+
+== How does Gradle work?
+
+* A set of core systems which are language-agnostic
+** Execution engine, dependency management, caching, ...
+* Everything else is a *Plugin*
+** Core plugins: Java, Groovy, Scala, ...
+** Community plugins: Kotlin (by JetBrains), Android (by Google),  ...
+** *Your own plugins as part of your software!*
+
+== Defining Components as Gradle Builds
+
+[plantuml, plain-components, png, width=600, height=0%]
+....
+scale 2400 width
+skinparam monochrome true
+skinparam backgroundcolor transparent
+skinparam componentStyle uml2
+skinparam component {
+    BackgroundColor white
+    BorderColor Black
+	ArrowColor Black
+}
+
+[server-application]
+
+[user-feature]
+
+[domain-model]
+
+[server-application]-[hidden]>[user-feature]
+[user-feature]-[hidden]>[domain-model]
+....
+
+Demo #1
+
+We define each component in an independent Gradle build
+
+[source,terminal]
+----
+─ server-application
+  └── settings.gradle.kts
+
+─ user-feature
+  └── settings.gradle.kts
+
+─ domain-model
+  └── settings.gradle.kts
+----
+
+== Component: User Feature
+
+[plantuml, user-feature-1, png, width=240, height=0%]
+....
+scale 2400 width
+skinparam monochrome true
+skinparam backgroundcolor transparent
+skinparam componentStyle uml2
+skinparam component {
+    BackgroundColor white
+    BorderColor Black
+	ArrowColor Black
+}
+
+component user-feature {
+    [data]
+    [ui]
+}
+....
+
+[source,terminal]
+----
+─ user-feature
+  ├── data
+  │   └─ build.gradle.kts
+  │      | plugins { id("java-library") } // generic type (core plugin)
+  │      | java    { ... }                // inidvidual configuration
+  │      | ...
+  │
+  ├── table
+  │   └─ build.gradle.kts
+  │      | plugins { id("java-library") } // generic type (core plugin)
+  │      | java    { ... }                // inidvidual configuration
+  │      | ...
+  │
+  └── settings.gradle.kts
+      | include("data", "ui")              // inner component structure
+----
+

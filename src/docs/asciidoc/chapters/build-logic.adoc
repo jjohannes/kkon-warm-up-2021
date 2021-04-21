@@ -1,0 +1,125 @@
+[background-color="#01303a"]
+== Organising Build Configuration in a Build Logic Component
+
+== Adding a Build Logic Component
+
+[plantuml, arch-component-10, png, width=540, height=0%]
+....
+scale 2400 width
+skinparam monochrome true
+skinparam backgroundcolor transparent
+skinparam componentStyle uml2
+skinparam component {
+    BackgroundColor white
+    BorderColor Black
+	ArrowColor Black
+}
+
+[server-application]
+
+[user-feature]
+
+[domain-model]
+
+[build-logic]
+
+[server-application] ..> [build-logic]
+[user-feature] ..> [build-logic]
+[domain-model] ..> [build-logic]
+....
+
+Demo #2 - We add a separate component (Gradle build) for build logic
+
+[source,terminal]
+----
+- build-logic
+  └── settings.gradle.kts
+
+- server-application
+  └── settings.gradle.kts
+
+- user-feature
+  └── settings.gradle.kts
+
+- domain-model
+  └── settings.gradle.kts
+----
+
+== Component: User Feature
+
+[plantuml, user-feature-2, png, width=240, height=0%]
+....
+scale 2400 width
+skinparam monochrome true
+skinparam backgroundcolor transparent
+skinparam componentStyle uml2
+skinparam component {
+    BackgroundColor white
+    BorderColor Black
+	ArrowColor Black
+}
+
+component user-feature {
+    [data]
+    [ui]
+}
+....
+
+[source,terminal]
+----
+─ user-feature
+  ├── data
+  │   └── build.gradle.kts
+  │       | plugins { id("com.example.java-library") }  // project type
+  │
+  ├── ui
+  │   └── build.gradle.kts
+  │       | plugins { id("com.example.kotlin-library") } // project type
+  │
+  └── settings.gradle.kts
+      | includeBuild("../build-logic")  // location of a source component
+      | repositories { mavenCentral() } // location of binary components
+      | include("data", "ui")           // inner structure
+----
+
+
+== Component: Build Logic
+[plantuml, build-logic, png, width=600, height=0%]
+....
+scale 2400 width
+skinparam monochrome true
+skinparam backgroundcolor transparent
+skinparam componentStyle uml2
+skinparam component {
+    BackgroundColor white
+    BorderColor Black
+	ArrowColor Black
+}
+
+component build-logic {
+    [java-library]
+    [kotlin-library]
+    [spring-boot-application]
+}
+[java-library]-[hidden]>[kotlin-library]
+[kotlin-library]-[hidden]>[spring-boot-application]
+....
+
+[source,terminal]
+----
+─ build-logic
+  ├── java-library
+  │   └── build.gradle.kts
+  │       | plugins { `kotlin-dsl` } // project type for Gradle plugins
+  │
+  ├── kotlin-library
+  │   └── build.gradle.kts
+  │       | plugins { `kotlin-dsl` } // project type for Gradle plugins
+  │
+  ├── spring-boot-application
+  │   └── ...
+  │
+  └── settings.gradle.kts
+      | repositories { gradlePluginPortal() } // location binary components
+      | include("java-library", "kotlin-library", .. // inner structure
+----

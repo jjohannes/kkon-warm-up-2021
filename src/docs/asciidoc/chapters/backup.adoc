@@ -1,0 +1,122 @@
+
+== Variants and dependency resolution
+
+* Each project (or binary component) has multiple variants
+* Gradle selects one variant during _dependency resolution_
+* For example: Java Libraries have an "API" and a "Runtime" variant
+
+[plantuml, variants-declared, png, width=540, height=0%]
+....
+scale 2400 width
+skinparam monochrome true
+skinparam component {
+    BackgroundColor white
+    BorderColor Black
+	ArrowColor Black
+}
+
+[user-feature]
+[domain-model]
+
+rectangle "<<project>> data" as data
+rectangle "<<project>> release" as release
+rectangle "<<project>> table" as table
+
+table -right-> data
+data -right-> release
+
+rectangle "<<variant>> api" as dataApi
+rectangle "<<variant>> api" as releaseApi
+
+rectangle "<<variant>> runtime" as dataRT
+rectangle "<<variant>> runtime" as releaseRT
+
+cloud "[table] runtimeClasspath" as runtimeClasspath
+cloud "[table] compileClasspath" as compileClasspath
+
+[user-feature] *-down- table
+[user-feature] *-down- data
+[domain-model] *-down- release
+
+data *-- dataApi
+data *-- dataRT
+release *-- releaseApi
+release *-- releaseRT
+
+compileClasspath .up.> releaseApi
+compileClasspath .up.> dataApi
+
+runtimeClasspath .up..> releaseRT
+runtimeClasspath .up..> dataRT
+....
+
+
+== Publishing and using binary components
+
+- Publish any project as binary component with `maven-publish` plugin
+- Published to repository (can be a local folder)
+
+[plantuml, binary-component, png, width=220, height=0%]
+....
+scale 2400 width
+skinparam monochrome true
+skinparam component {
+    BackgroundColor white
+    BorderColor Black
+	ArrowColor Black
+}
+
+database "External Repository" {
+  [domain-model]
+}
+
+package "Business Logic Layer" {
+  [user-feature]
+}
+
+[user-feature] --> [domain-model]
+....
+
+[source,terminal]
+----
+─ user-feature
+  └── settings.gradle.kts
+      | // includeBuild("domain-model") // find here ⤵️ instead
+      | repositories { maven { url = uri("my-repository") } }
+----
+
+== Gradle Antipatterns
+
+* Tasks implementation (imperative code) in build scripts
+* Don't access state from other projects
+** `project(":table").tasks.jar.archiveFile` <- don't do this
+* Using a "root project" `build.gradle(.kts)` to share build logic
+** You need to keep care of order yourself (when is a  plugin applied exactly?)
+** Mix of concerns (one big if/else block)
+** Can't access plugin extensions easily
+
+[source,terminal]
+----
+allprojects { // Don't do this!
+    if (plugins.hasPlugin("java-library")) { ... }
+    if (plugins.hasPlugin("org.jetbrains.kotlin.jvm")) { ... }
+}
+----
+
+== Imperative code in the wrong places
+
+* If you need to run "clean" to trust your build...
+** ...you may have imperative logic outside tasks (or transforms)
+** ...a custom task implementation is broken
+
+//== Some notes...
+//
+//* Gradle wrapper
+//** To build without local Gradle installation
+//* buildSrc
+//** Legacy place for build logic from before build composition support
+//** Cannot be shared among several builds
+//* Term "Configuration"
+//** Historically used in dependency management part of DSL/API
+//** A "Variant" is currently called a "Configuration" in many places
+//** Better DSL and API is work in progress (for Gradle 7.x)

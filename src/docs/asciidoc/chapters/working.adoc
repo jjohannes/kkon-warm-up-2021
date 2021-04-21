@@ -1,0 +1,24 @@
+[background-color="#01303a"]
+== Working with your Gradle builds
+
+== Gradle tasks
+
+- Gradle knows inputs and outputs
+- If output of a task is the input of another, there is a dependency
+- Incremental - a task only executes if input/output changes
+- Build cache - Outputs can be retrieved from (remote) cache
+
+Demo #4
+
+Exploring: task execution, incremental builds, build cache, custom tasks
+
+== Custom tasks
+// Example: class file counter
+
+* An abstract class extending `DefaultTask`
+* Written in Java, Scala, Groovy, Kotlin
+* Properties as annotated abstract getter methods (`getPropertyName()`)
+// ** `@InputFile`, `@InputFiles`, `@OutputFile`, `@OutputDirectory`
+// ** Each task should have at least one input and one output
+// ** Used for: task dependency, incremental builds, build cache
+* Each task has an action implemented in a `@TaskAction` method
