@@ -151,22 +151,7 @@ Other JVM language can also be used to control Gradle.</td></tr></table></div></
 <div class="paragraph"><p><strong>Chat more about Gradle and Kotlin?</strong></p></div>
 <div class="paragraph"><p><a href="mailto:jendrik@onepiece.software">jendrik@onepiece.software</a></p></div>
 <div class="paragraph"><p><a href="https://onepiece.software">onepiece.software</a></p></div>
-<div class="paragraph"><p><a href="https://twitter.com/jeoj">@jeoj</a></p></div></section>
-<section id="" data-transition="none"><h2>&#8230;&#8203;</h2></section>
-<section id="variants-and-dependency-resolution" data-transition="none"><h2>Variants and dependency resolution</h2><div class="ulist"><ul><li><p>Each project (or binary component) has multiple variants</p></li><li><p>Gradle selects one variant during <em>dependency resolution</em></p></li><li><p>For example: Java Libraries have an "API" and a "Runtime" variant</p></li></ul></div>
-<div class="imageblock" style=""><img src="./images/variants-declared.png" alt="variants declared" width="540" height="0%" /></div></section>
-<section id="publishing-and-using-binary-components" data-transition="none"><h2>Publishing and using binary components</h2><div class="ulist"><ul><li><p>Publish any project as binary component with <code>maven-publish</code> plugin</p></li><li><p>Published to repository (can be a local folder)</p></li></ul></div>
-<div class="imageblock" style=""><img src="./images/binary-component.png" alt="binary component" width="220" height="0%" /></div>
-<pre class="highlight listingblock"><code data-noescape="" class="terminal language-terminal">─ user-feature
-  └── settings.gradle.kts
-      | // includeBuild("domain-model") // find here ⤵️ instead
-      | repositories { maven { url = uri("my-repository") } }</code></pre></section>
-<section id="gradle-antipatterns" data-transition="none"><h2>Gradle Antipatterns</h2><div class="ulist"><ul><li><p>Tasks implementation (imperative code) in build scripts</p></li><li><p>Don&#8217;t access state from other projects</p><div class="ulist"><ul><li><p><code>project(":table").tasks.jar.archiveFile</code> &#8592; don&#8217;t do this</p></li></ul></div></li><li><p>Using a "root project" <code>build.gradle(.kts)</code> to share build logic</p><div class="ulist"><ul><li><p>You need to keep care of order yourself (when is a  plugin applied exactly?)</p></li><li><p>Mix of concerns (one big if/else block)</p></li><li><p>Can&#8217;t access plugin extensions easily</p></li></ul></div></li></ul></div>
-<pre class="highlight listingblock"><code data-noescape="" class="terminal language-terminal">allprojects { // Don't do this!
-    if (plugins.hasPlugin("java-library")) { ... }
-    if (plugins.hasPlugin("org.jetbrains.kotlin.jvm")) { ... }
-}</code></pre></section>
-<section id="imperative-code-in-the-wrong-places" data-transition="none"><h2>Imperative code in the wrong places</h2><div class="ulist"><ul><li><p>If you need to run "clean" to trust your build&#8230;&#8203;</p><div class="ulist"><ul><li><p>&#8230;&#8203;you may have imperative logic outside tasks (or transforms)</p></li><li><p>&#8230;&#8203;a custom task implementation is broken</p></li></ul></div></li></ul></div></section></div></div><script src="reveal.js/lib/js/head.min.js"></script><script src="reveal.js/js/reveal.js"></script><script>Array.prototype.slice.call(document.querySelectorAll('.slides section')).forEach(function(slide) {
+<div class="paragraph"><p><a href="https://twitter.com/jeoj">@jeoj</a></p></div></section></div></div><script src="reveal.js/lib/js/head.min.js"></script><script src="reveal.js/js/reveal.js"></script><script>Array.prototype.slice.call(document.querySelectorAll('.slides section')).forEach(function(slide) {
   if (slide.getAttribute('data-background-color')) return;
   // user needs to explicitly say he wants CSS color to override otherwise we might break custom css or theme (#226)
   if (!(slide.classList.contains('canvas') || slide.classList.contains('background'))) return;
