@@ -119,7 +119,7 @@ mailto:jendrik@onepiece.software[jendrik@onepiece.software]
 
 https://onepiece.software[onepiece.software]
 
-https://twitter.com/jeoj[@jeoj]
+https://mastodon.social/@jendrik[@jendrik@mastodon.social]
 
 == ...
 
